@@ -1,0 +1,25 @@
+{
+  "name": "openai-claude-proxy",
+  "version": "1.0.0",
+  "description": "OpenAI to Anthropic proxy for Cloudflare Workers",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "deploy:prod": "wrangler deploy --env production"
+  },
+  "keywords": [
+    "openai",
+    "anthropic",
+    "claude",
+    "proxy",
+    "cloudflare-workers"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241127.0",
+    "wrangler": "^3.94.0",
+    "typescript": "^5.7.2"
+  }
+}

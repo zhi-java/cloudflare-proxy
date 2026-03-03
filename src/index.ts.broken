@@ -1,0 +1,48 @@
+import type { Env, OpenAIRequest, AnthropicResponse } from './types';
+import { convertOpenAIToAnthropic, convertAnthropicToOpenAI } from './converter';
+
+export lt {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    // CORS 处理
+    if (request.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+        },
+      });
+    }
+
+    const url = new URL(request.url);
+
+    // 健康检查
+    if (url.pathname === '/health' || url.pathname ===      return new Response(
+        JSON.stringify({
+          status: 'ok',
+          service: 'OpenAI to Anthropic Proxy (Cloudflare Workers)',
+          version: '1.0.0',
+        }),
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+        }
+      );
+    }
+
+    // 处理 chat completions
+    if (url.pathname === '/v1/chat/completions' && request.method === 'POST') {
+      return handleChatCompletions(request, env);
+    }
+
+    return new Response('Not Found', { statu404 });
+  },
+};
+
+async function handleChatCompletions(request: Request, env: Env): Promise<Response> {
+  const startTime = Date.now();
+  const requestId = crypto.randomUUID();
+  
+  try {
+    // 提取 AP

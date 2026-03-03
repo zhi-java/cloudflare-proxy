@@ -1,0 +1,22 @@
+# 本地开发环境变量示例
+# 复制此文件为 .dev.vars 并填入实际值
+
+# 代理模式: anthropic（转换格式）或 passthrough（透传）
+PROXY_MODE=anthropic
+
+# 目标 API 端点
+# - anthropic 模式: Anthropic API 端点（默认 https://api.anthropic.com）
+# - passthrough 模式: OpenAI 兼容接口端点
+ANTHROPIC_BASE_URL=https://api.anthropic.com
+
+# 模型映射（客户端模型名 -> 目标模型名）
+# anthropic 模式示例: gpt-4:claude-opus-4-5-20251101
+# passthrough 模式示例: MiniMax-M2:claude-opus-4-6
+MODEL_MAPPING=gpt-4:claude-opus-4-5-20251101,gpt-3.5-turbo:e-3-5-haiku-20241022
+
+# Max Tokens 映射（目标模型名 -> max_tokens）
+# 可选：不配置则根据模型名称自动选择合理默认值
+# MAX_TOKENS_MAPPING=claude-opus-4-5-20251101:16384,claude-3-5-haiku-20241022:4096
+
+# Session TTL（分钟，仅 anthropic 模式有效）
+SESSION_TTL_MINUTES=60

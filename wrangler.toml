@@ -1,0 +1,30 @@
+name = "openai-claude-proxy"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+# 环境变量配置（仅默认值，实际值在 .dev.vars 或 Cloudflare Dashboard 配置）
+[vars]
+# 代理模式: anthropic（转换格式）或 passthrough（透传）
+PROXY_MODE = "anthropic"
+
+# Anthropic API 端点
+ANTHROPIC_BASE_URL = "https://anthorpic.us.ci"
+
+# 模型映射（OpenAI 模型名 -> Claude 模型名）
+# 注意：右侧必须是真实的 Claude 模型名
+MODEL_MAPPING = "MiniMax-M2:claude-opus-4-6"
+
+# Max Tokens 映射（Claude 模型名 -> max_tokens）
+MAX_TOKENS_MAPPING = "claude-opus-4-6:8192"
+
+# Session TTL（分钟）
+SESSION_TTL_MINUTES = "60"
+
+
+# 生产环境配置
+[env.production]
+name = "openai-claude-proxy-prod"
+
+# 开发环境配置
+[env.dev]
+name = "openai-claude-proxy-dev"
