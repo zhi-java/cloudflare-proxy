@@ -171,12 +171,15 @@ async function handleStreamResponse(
 
   (async () => {
     try {
+      console.log(`🌊 [STREAM_START] ${requestId}: Starting Anthropic stream processing`);
+      
       const reader = anthropicResp.body!.getReader();
       const decoder = new TextDecoder();
       let messageID = '';
       let usage: any = null;
       let toolIndex = 0;
       let buffer = ''; // 添加缓冲区处理不完整的数据
+      let eventCount = 0; // 事件计数器，类似基础项目
 
       while (true) {
         const { done, value } = await reader.read();
@@ -190,6 +193,10 @@ async function handleStreamResponse(
         buffer = lines.pop() || ''; // 保留最后一个可能不完整的行
 
         for (const line of lines) {
+          eventCount++;
+          // 记录每一行以便调试（类似基础项目的详细日志）
+          console.log(`🔍 [STREAM_LINE] ${requestId}[${eventCount}]: ${line}`);
+          
           if (!line.startsWith('data:')) continue;
 
           const data = line.slice(5).trim();
@@ -198,6 +205,9 @@ async function handleStreamResponse(
           try {
             const event = JSON.parse(data);
             const eventType = event.type;
+            
+            // 详细记录事件类型（类似基础项目）
+            console.log(`📋 [EVENT_TYPE] ${requestId}: ${eventType}`);
 
             if (eventType === 'message_start') {
               messageID = event.message.id;
@@ -342,6 +352,7 @@ async function handleStreamResponse(
       }
 
       await writer.write(encoder.encode('data: [DONE]\n\n'));
+      console.log(`🏁 [STREAM_END] ${requestId}: Completed with ${eventCount} events`);
       logStreamComplete(requestId, Date.now() - startTime);
     } catch (error) {
       console.error('Stream error:', error);
