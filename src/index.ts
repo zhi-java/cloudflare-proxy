@@ -176,13 +176,18 @@ async function handleStreamResponse(
       let messageID = '';
       let usage: any = null;
       let toolIndex = 0;
+      let buffer = ''; // 添加缓冲区处理不完整的数据
 
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
         const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n');
+        
+        // 使用缓冲区处理不完整的数据行
+        buffer += chunk;
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || ''; // 保留最后一个可能不完整的行
 
         for (const line of lines) {
           if (!line.startsWith('data:')) continue;
@@ -315,8 +320,24 @@ async function handleStreamResponse(
               }
             }
           } catch (e) {
-            console.error('Failed to parse event:', e);
+            console.error('Failed to parse event:', e, 'Raw data:', data);
+            // 继续处理，不要因为单个事件解析失败就中断整个流
           }
+        }
+      }
+
+      // 处理缓冲区中剩余的数据
+      if (buffer.trim()) {
+        try {
+          if (buffer.startsWith('data:')) {
+            const data = buffer.slice(5).trim();
+            if (data && data !== '[DONE]') {
+              const event = JSON.parse(data);
+              // 处理最后一个事件（如果需要的话）
+            }
+          }
+        } catch (e) {
+          console.error('Failed to parse final buffer:', e);
         }
       }
 
@@ -325,8 +346,18 @@ async function handleStreamResponse(
     } catch (error) {
       console.error('Stream error:', error);
       logError(requestId, error as Error, Date.now() - startTime);
+      // 确保即使出错也发送 [DONE]
+      try {
+        await writer.write(encoder.encode('data: [DONE]\n\n'));
+      } catch (e) {
+        console.error('Failed to write final [DONE]:', e);
+      }
     } finally {
-      await writer.close();
+      try {
+        await writer.close();
+      } catch (e) {
+        console.error('Failed to close writer:', e);
+      }
     }
   })();
 
@@ -436,7 +467,36 @@ async function handlePassthroughMode(
   // 直接返回响应（保持流式或非流式）
   if (openaiReq.stream) {
     logStreamStart(requestId);
-    return new Response(targetResp.body, {
+    
+    // 使用 TransformStream 确保流式数据完整传输
+    const { readable, writable } = new TransformStream();
+    const writer = writable.getWriter();
+    
+    (async () => {
+      try {
+        const reader = targetResp.body!.getReader();
+        
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          await writer.write(value);
+        }
+        
+        logStreamComplete(requestId, Date.now() - startTime);
+      } catch (error) {
+        console.error('Passthrough stream error:', error);
+        logError(requestId, error as Error, Date.now() - startTime);
+      } finally {
+        try {
+          await writer.close();
+        } catch (e) {
+          console.error('Failed to close passthrough writer:', e);
+        }
+      }
+    })();
+    
+    return new Response(readable, {
       status: targetResp.status,
       headers: {
         'Content-Type': 'text/event-stream',
