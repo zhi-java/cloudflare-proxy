@@ -426,7 +426,7 @@ async function handlePassthroughMode(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bear ${apiKey}`,
+      'Authorization': `Bearer ${apiKey}`,
     },
     body: JSON.stringify(openaiReq),
   });
