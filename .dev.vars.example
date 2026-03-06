@@ -7,7 +7,7 @@ PROXY_MODE=anthropic
 # 目标 API 端点
 # - anthropic 模式: Anthropic API 端点（默认 https://api.anthropic.com）
 # - passthrough 模式: OpenAI 兼容接口端点
-ANTHROPIC_BASE_URL=https://api.anthropic.com
+UPSTREAM_BASE_URL=https://api.anthropic.com
 
 # 模型映射（客户端模型名 -> 目标模型名）
 # anthropic 模式示例: gpt-4:claude-opus-4-5-20251101

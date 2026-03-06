@@ -76,6 +76,10 @@ function parseLogLevel(value: string | undefined): 'DEBUG' | 'INFO' | 'WARN' | '
   return 'INFO';
 }
 
+function getUpstreamBaseURL(env: Env, fallback: string): string {
+  return env.UPSTREAM_BASE_URL || env.ANTHROPIC_BASE_URL || fallback;
+}
+
 function buildAppConfig(env: Env): AppConfig {
   return {
     retry: {
@@ -436,7 +440,7 @@ async function handleChatCompletions(request: Request, env: Env, appConfig: AppC
     );
     
     // 发送到 Anthropic API
-    const anthropicURL = env.ANTHROPIC_BASE_URL || 'https://api.anthropic.com';
+    const anthropicURL = getUpstreamBaseURL(env, 'https://api.anthropic.com');
     const upstreamHeaders = {
       'Content-Type': 'application/json',
       'x-api-key': apiKey.substring(0, 12) + '...',
@@ -833,7 +837,7 @@ async function handlePassthroughMode(
   startTime: number,
   appConfig: AppConfig
 ): Promise<Response> {
-  const baseURL = env.ANTHROPIC_BASE_URL || 'https://api.openai.com';
+  const baseURL = getUpstreamBaseURL(env, 'https://api.openai.com');
   const targetURL = `${baseURL}/v1/chat/completions`;
   
   // 优化的请求信息记录
@@ -1134,7 +1138,10 @@ async function handlePassthroughStream(
 // 健康检查端点
 async function handleHealthCheck(env: Env, appConfig: AppConfig): Promise<Response> {
   const proxyMode = (env.PROXY_MODE || 'anthropic').toLowerCase();
-  const baseURL = env.ANTHROPIC_BASE_URL || (proxyMode === 'passthrough' ? 'https://api.openai.com' : 'https://api.anthropic.com');
+  const baseURL = getUpstreamBaseURL(
+    env,
+    proxyMode === 'passthrough' ? 'https://api.openai.com' : 'https://api.anthropic.com'
+  );
   
   // 检查上游服务健康状态
   let upstreamStatus = 'unknown';

@@ -146,7 +146,8 @@ export interface OpenAIResponse {
 }
 
 export interface Env {
-  ANTHROPIC_BASE_URL?: string;
+  UPSTREAM_BASE_URL?: string;
+  ANTHROPIC_BASE_URL?: string; // deprecated: 向后兼容
   MODEL_MAPPING?: string;
   MAX_TOKENS_MAPPING?: string;
   MAX_TOKENS?: string;

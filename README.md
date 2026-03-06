@@ -84,7 +84,7 @@ compatibility_date = "2024-01-01"
 PROXY_MODE = "passthrough"
 
 # 你的上游 API
-ANTHROPIC_BASE_URL = "https://api.daiju.live"
+UPSTREAM_BASE_URL = "https://api.daiju.live"
 
 # 可选：模型映射，格式 source:target，多个用逗号分隔
 MODEL_MAPPING = ""
@@ -95,7 +95,7 @@ MODEL_MAPPING = ""
 | 变量名 | 建议 | 说明 |
 |---|---|---|
 | `PROXY_MODE` | 必配 | `anthropic` / `passthrough` |
-| `ANTHROPIC_BASE_URL` | 必配 | 上游 API 基础地址 |
+| `UPSTREAM_BASE_URL` | 必配 | 上游 API 基础地址 |
 | `MODEL_MAPPING` | 可选 | 例如：`gpt-4:claude-opus-4-5-20251101` |
 | `MAX_TOKENS_MAPPING` | 可选 | 不配也行，代码内有默认策略 |
 
@@ -202,7 +202,7 @@ npx wrangler tail
 
 优先检查：
 
-1. `ANTHROPIC_BASE_URL` 是否可达；
+1. `UPSTREAM_BASE_URL` 是否可达；
 2. 上游服务是否限流或阻塞；
 3. 请求体是否过大（尤其长上下文 + 流式）。
 

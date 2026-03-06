@@ -12,10 +12,10 @@ compatibility_date = "2024-01-01"
 PROXY_MODE = "passthrough"
 
 # 上游 API 基础地址。
-# Anthropic 模式通常为 https://api.anthropic.com
-ANTHROPIC_BASE_URL = "https://api.daiju.live"
+# anthropic 模式通常为 https://api.anthropic.com
+UPSTREAM_BASE_URL = "https://api.daiju.live"
 
 # 模型映射：源模型:目标模型，多个映射用逗号分隔。
 # 例如："gpt-4:claude-opus-4-5-20251101"
-MODEL_MAPPING = ""
+MODEL_MAPPING = "Lucky-Ai:gpt-5.3-codex"
 
