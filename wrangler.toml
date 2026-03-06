@@ -1,6 +1,6 @@
-name = "openai-claude-proxy"
+name = "lp-proxy"
 main = "src/index.ts"
-compatibility_date = "2024-01-01"
+compatibility_date = "2026-01-01"
 
 # 环境变量配置（单环境）
 # 仅保留社区部署最常需要按需调整的参数。
@@ -17,5 +17,5 @@ UPSTREAM_BASE_URL = "https://api.daiju.live"
 
 # 模型映射：源模型:目标模型，多个映射用逗号分隔。
 # 例如："gpt-4:claude-opus-4-5-20251101"
-MODEL_MAPPING = "Lucky-Ai:gpt-5.3-codex"
+MODEL_MAPPING = "Lucky-Ai:gpt-5.4"
 
