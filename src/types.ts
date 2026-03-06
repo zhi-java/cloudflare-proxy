@@ -152,4 +152,12 @@ export interface Env {
   MAX_TOKENS?: string;
   SESSION_TTL_MINUTES?: string;
   PROXY_MODE?: string; // 'anthropic' | 'passthrough'
+  LOG_LEVEL?: string; // 'DEBUG' | 'INFO' | 'WARN' | 'ERROR'
+  MAX_RETRIES?: string;
+  RETRY_BASE_DELAY?: string;
+  RETRY_MAX_DELAY?: string;
+  RETRYABLE_STATUSES?: string; // 例如: "408,429,502,503,504"
+  REQUEST_TIMEOUT_MS?: string;
+  CIRCUIT_BREAKER_FAILURE_THRESHOLD?: string;
+  CIRCUIT_BREAKER_TIMEOUT?: string;
 }
